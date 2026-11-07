@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090d0b">
+  <meta name="description" content="ADK. Proyectos de software, bots y desarrollo.">
+  <title>ADK | Página oficial</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090d0b;
+      --panel: #111915;
+      --panel-2: #17221b;
+      --text: #f1f5f1;
+      --muted: #a5b2a8;
+      --green: #83e39b;
+      --line: rgba(170, 220, 180, .14);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at 80% 0%, rgba(59,189,105,.13), transparent 34rem), var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+    header {
+      position: sticky; top: 0; z-index: 5;
+      background: rgba(9,13,11,.84);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+    }
+    .nav { min-height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { font-size: 1.35rem; font-weight: 850; letter-spacing: .12em; }
+    .brand span { color: var(--green); }
+    nav { display: flex; gap: 24px; color: var(--muted); font-size: .94rem; }
+    nav a:hover, .text-link:hover { color: var(--green); }
+    .hero { padding: 108px 0 94px; }
+    .eyebrow { color: var(--green); font-size: .8rem; font-weight: 750; letter-spacing: .2em; text-transform: uppercase; }
+    h1 { margin: 16px 0; font-size: clamp(3.6rem, 11vw, 7.5rem); line-height: .98; letter-spacing: -.07em; }
+    h1 span { color: var(--green); }
+    .intro { max-width: 620px; color: var(--muted); font-size: clamp(1.05rem, 2.5vw, 1.25rem); }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 48px; padding: 0 20px; border-radius: 12px;
+      border: 1px solid var(--line); font-weight: 700; transition: .2s ease;
+    }
+    .button.primary { color: #07100a; background: var(--green); border-color: var(--green); }
+    .button:hover { transform: translateY(-2px); }
+    .button.secondary:hover { border-color: var(--green); color: var(--green); }
+    section { padding: 64px 0; }
+    .section-head { margin-bottom: 26px; }
+    h2 { margin: 0 0 8px; font-size: clamp(1.8rem, 5vw, 2.5rem); letter-spacing: -.04em; }
+    .section-head p, .card p, .about p { color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+    .card {
+      min-height: 205px; padding: 25px; border: 1px solid var(--line);
+      border-radius: 18px; background: linear-gradient(145deg, var(--panel-2), var(--panel));
+    }
+    .number { color: var(--green); font-size: .8rem; font-weight: 800; letter-spacing: .12em; }
+    h3 { margin: 13px 0 8px; font-size: 1.35rem; }
+    .card p { margin: 0; }
+    .about {
+      padding: 30px; border: 1px solid var(--line); border-radius: 18px;
+      background: rgba(17,25,21,.72);
+    }
+    .about p { max-width: 720px; margin-bottom: 0; }
+    footer { margin-top: 40px; padding: 28px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+    .footer-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 28px, 1080px); }
+      .nav { min-height: 62px; }
+      nav { gap: 13px; font-size: .83rem; }
+      .hero { padding: 82px 0 65px; }
+      section { padding: 48px 0; }
+      .grid { grid-template-columns: 1fr; }
+      .card { min-height: auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#inicio" aria-label="ADK, inicio">ADK<span>.</span></a>
+      <nav aria-label="Navegación principal">
+        <a href="#proyectos">Proyectos</a>
+        <a href="#sobre">Sobre ADK</a>
+        <a href="#contacto">Enlaces</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap" id="inicio">
+      <div class="eyebrow">Página oficial</div>
+      <h1>Ideas que se<br><span>convierten</span> en código.</h1>
+      <p class="intro">ADK es el espacio donde se presentan proyectos de programación, automatización y desarrollo de software.</p>
+      <div class="actions">
+        <a class="button primary" href="#proyectos">Ver proyectos</a>
+        <a class="button secondary" href="https://github.com/fitoadk638-alt" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      </div>
+    </section>
+
+    <section class="wrap" id="proyectos">
+      <div class="section-head">
+        <div class="eyebrow">En desarrollo</div>
+        <h2>Proyectos</h2>
+        <p>Una selección de proyectos vinculados a ADK.</p>
+      </div>
+      <div class="grid">
+        <article class="card">
+          <div class="number">01 / WHATSAPP</div>
+          <h3>CordinalWa</h3>
+          <p>Proyecto de bot para WhatsApp, con comandos y herramientas organizadas en un sistema propio.</p>
+        </article>
+        <article class="card">
+          <div class="number">02 / TELEGRAM</div>
+          <h3>CordinalTG</h3>
+          <p>Proyecto de bot para Telegram, parte del trabajo de desarrollo que acompaña al ecosistema COSS.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap" id="sobre">
+      <div class="about">
+        <div class="eyebrow">Acerca de</div>
+        <h2>ADK</h2>
+        <p>Este sitio reúne información y enlaces de los proyectos publicados bajo el nombre ADK. Se irá actualizando a medida que avance cada proyecto.</p>
+      </div>
+    </section>
+
+    <section class="wrap" id="contacto">
+      <div class="section-head">
+        <div class="eyebrow">Encuéntrame</div>
+        <h2>Enlaces oficiales</h2>
+        <p>Repositorios y novedades de los proyectos.</p>
+      </div>
+      <a class="button secondary" href="https://github.com/fitoadk638-alt" target="_blank" rel="noopener noreferrer">GitHub de ADK ↗</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-row">
+      <span>© <span id="year">2026</span> ADK</span>
+      <span>Hecho con código.</span>
+    </div>
+  </footer>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
