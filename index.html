@@ -174,6 +174,65 @@
 
     .card p { margin: 0; }
 
+    /* ESTADO DE LOS BOTS */
+
+    .bot-status {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 13px 0 15px;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(0,0,0,.16);
+      font-size: .88rem;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: #89918b;
+      box-shadow: 0 0 8px rgba(137,145,139,.4);
+    }
+
+    .bot-status.online .status-indicator {
+      background: #45e477;
+      box-shadow: 0 0 10px rgba(69,228,119,.7);
+    }
+
+    .bot-status.offline .status-indicator {
+      background: #ff5555;
+      box-shadow: 0 0 10px rgba(255,85,85,.55);
+    }
+
+    .bot-status.unknown .status-indicator {
+      background: #e5b84b;
+      box-shadow: 0 0 8px rgba(229,184,75,.4);
+    }
+
+    .status-label {
+      font-weight: 750;
+    }
+
+    .bot-status.online .status-label { color: #83e39b; }
+    .bot-status.offline .status-label { color: #ff7777; }
+    .bot-status.unknown .status-label { color: #e5c36b; }
+
+    .status-ping {
+      margin-left: auto;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .status-updated {
+      color: var(--muted);
+      font-size: .76rem;
+      margin-top: 8px;
+    }
+
     .about {
       padding: 30px;
       border: 1px solid var(--line);
@@ -317,9 +376,17 @@
       </div>
 
       <div class="grid">
+
         <article class="card">
           <div class="number">01 / WHATSAPP</div>
           <h3>CordinalWa</h3>
+
+          <div class="bot-status unknown" data-bot="whatsapp" aria-live="polite">
+            <span class="status-indicator"></span>
+            <span class="status-label">Consultando estado...</span>
+            <span class="status-ping">Ping: --</span>
+          </div>
+
           <p>
             Proyecto de bot para WhatsApp, con comandos y herramientas
             organizadas en un sistema propio.
@@ -329,11 +396,23 @@
         <article class="card">
           <div class="number">02 / TELEGRAM</div>
           <h3>CordinalTG</h3>
+
+          <div class="bot-status unknown" data-bot="telegram" aria-live="polite">
+            <span class="status-indicator"></span>
+            <span class="status-label">Consultando estado...</span>
+            <span class="status-ping">Ping: --</span>
+          </div>
+
           <p>
             Proyecto de bot para Telegram, parte del trabajo de desarrollo
             que acompaña al ecosistema COSS.
           </p>
         </article>
+
+      </div>
+
+      <div class="status-updated" id="status-updated" aria-live="polite">
+        Conectando con el monitor...
       </div>
     </section>
 
@@ -420,6 +499,126 @@
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // MONITOR PUBLICO DE CORDINALWA Y CORDINALTG
+
+    const MONITOR_URL = "https://adk-bot-status.fitoadk638.workers.dev/status";
+
+    let estadoActual = null;
+    let ultimaConsulta = 0;
+    let monitorDisponible = false;
+    let consultando = false;
+
+    function mostrarEstado(elemento, conectado, ping, desconocido = false) {
+      const etiqueta = elemento.querySelector(".status-label");
+      const latencia = elemento.querySelector(".status-ping");
+
+      elemento.classList.remove("online", "offline", "unknown");
+
+      if (desconocido) {
+        elemento.classList.add("unknown");
+        etiqueta.textContent = "Estado no disponible";
+        latencia.textContent = "Ping: --";
+        return;
+      }
+
+      if (conectado) {
+        elemento.classList.add("online");
+        etiqueta.textContent = "En línea";
+        latencia.textContent =
+          Number.isFinite(Number(ping))
+            ? "Ping: " + Number(ping) + " ms"
+            : "Ping: --";
+      } else {
+        elemento.classList.add("offline");
+        etiqueta.textContent = "Desconectado";
+        latencia.textContent = "Ping: --";
+      }
+    }
+
+    function renderizarEstado() {
+      const whatsapp = document.querySelector('[data-bot="whatsapp"]');
+      const telegram = document.querySelector('[data-bot="telegram"]');
+      const actualizado = document.getElementById("status-updated");
+
+      if (!monitorDisponible || !estadoActual) {
+        mostrarEstado(whatsapp, false, null, true);
+        mostrarEstado(telegram, false, null, true);
+        actualizado.textContent = "No se pudo consultar el monitor.";
+        return;
+      }
+
+      const wa = estadoActual.whatsapp || {};
+      const tg = estadoActual.telegram || {};
+
+      mostrarEstado(
+        whatsapp,
+        wa.status === "conectado",
+        wa.pingMs
+      );
+
+      mostrarEstado(
+        telegram,
+        tg.status === "conectado",
+        tg.pingMs
+      );
+
+      const segundos = Math.max(
+        0,
+        Math.floor((Date.now() - ultimaConsulta) / 1000)
+      );
+
+      actualizado.textContent =
+        "Monitor actualizado hace " + segundos + " s";
+    }
+
+    async function consultarMonitor() {
+      if (consultando) return;
+
+      consultando = true;
+
+      try {
+        const respuesta = await fetch(MONITOR_URL, {
+          method: "GET",
+          cache: "no-store"
+        });
+
+        if (!respuesta.ok) {
+          throw new Error("HTTP " + respuesta.status);
+        }
+
+        const datos = await respuesta.json();
+
+        if (
+          !datos ||
+          !datos.whatsapp ||
+          !datos.telegram
+        ) {
+          throw new Error("Respuesta del monitor inválida");
+        }
+
+        estadoActual = datos;
+        ultimaConsulta = Date.now();
+        monitorDisponible = true;
+
+      } catch (error) {
+        monitorDisponible = false;
+        console.error("[ADK Monitor]", error.message);
+
+      } finally {
+        consultando = false;
+        renderizarEstado();
+      }
+    }
+
+    // Primera consulta inmediata.
+    consultarMonitor();
+
+    // Consultar datos nuevos cada 30 segundos.
+    setInterval(consultarMonitor, 30000);
+
+    // Actualizar el indicador visual cada 5 segundos.
+    setInterval(renderizarEstado, 5000);
   </script>
 
 </body>
